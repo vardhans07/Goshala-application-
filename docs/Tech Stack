@@ -6,3 +6,16 @@ QR Scan: html5-qrcode (web)
 Reports: ExcelJS + PDFKit
 Auth: JWT + bcrypt
 Finance/Billing/Donations: Full module
+
+
+
+cow-tag-mobile/
+├── app.json
+├── App.js
+├── screens/
+│   ├── LoginScreen.js
+│   ├── DashboardScreen.js
+│   ├── ScanScreen.js          ← Full RFID + QR
+│   ├── RegisterAnimalScreen.js
+│   ├── ReportsScreen.js
+│   └── FinanceScreen.js
