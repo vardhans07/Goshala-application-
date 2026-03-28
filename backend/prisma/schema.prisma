@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  passwordHash  String
+  role          Role     @default(STAFF)
+  name          String
+  email         String?  @unique
+  createdAt     DateTime @default(now())
+  scans         Scan[]
+}
+
+model Animal {
+  id                Int      @id @default(autoincrement())
+  tagCode           String   @unique
+  name              String
+  breed             String?
+  birthDate         DateTime?
+  status            AnimalStatus @default(HEALTHY)
+  registrationDate  DateTime @default(now())
+  notes             String?
+  scans             Scan[]
+  donations         Donation[]
+}
+
+model Scan {
+  id            Int      @id @default(autoincrement())
+  animalId      Int
+  animal        Animal   @relation(fields: [animalId], references: [id])
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  scanTimestamp DateTime @default(now())
+  latitude      Float?
+  longitude     Float?
+  scanMethod    ScanMethod @default(QR)
+  status        ScanStatus @default(VALID)
+  isDuplicate   Boolean  @default(false)
+  notes         String?
+}
+
+model Donation {
+  id            Int      @id @default(autoincrement())
+  donorName     String
+  donorEmail    String?
+  amount        Float
+  currency      String   @default("INR")
+  donationDate  DateTime @default(now())
+  billNumber    String   @unique
+  animalId      Int?
+  animal        Animal?  @relation(fields: [animalId], references: [id])
+  status        String   @default("PAID")
+}
+
+enum Role { ADMIN STAFF SCANNER }
+enum AnimalStatus { HEALTHY SICK MISSING }
+enum ScanStatus { VALID INVALID DUPLICATE }
+enum ScanMethod { QR RFID }
