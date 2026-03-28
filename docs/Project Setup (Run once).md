@@ -3,7 +3,7 @@
 Initialize the project structure with **frontend (React + Vite)** and **backend (Node.js)**.
 
 ```bash
-mkdir cow-tag-app && cd cow-tag-app
+mkdir goshala-application && cd goshala-application
 ```
 
 ```bash
@@ -37,6 +37,20 @@ cd ../frontend
 ```
 ```bash
 npm install axios react-router-dom chart.js react-chartjs-2 html5-qrcode socket.io-client qrcode react-icons
+```
+#🍥Mobile (React Native)
+
+```bash
+npx create-expo-app mobile --template blank
+```
+```bash
+cd mobile
+```
+```bash
+npm install axios socket.io-client react-native-ble-plx @react-native-async-storage/async-storage
+```
+```bash
+npx expo install expo-location expo-barcode-scanner
 ```
 
 
