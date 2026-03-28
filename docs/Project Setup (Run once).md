@@ -52,3 +52,26 @@ npx prisma generate
 npx prisma db push
 ```
 
+#🍥Run these commands afterbackend/src/server.js (Full Updated Backend):
+
+
+```bash
+cd backend
+```
+```bash
+npm install express @prisma/client prisma cors dotenv jsonwebtoken bcryptjs socket.io exceljs pdfkit
+```
+```bash
+npm install -D nodemon
+```
+```bash
+npx prisma generate
+```
+```bash
+npx prisma db push
+```
+```bash
+npm run dev   # (add "dev": "nodemon src/server.js" in package.json)
+```
+
+
