@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Goshala Application",
+    "slug": "goshala-application",
+    "version": "1.0.0",
+    "plugins": [
+      [
+        "react-native-ble-plx",
+        {
+          "isBackgroundEnabled": true,
+          "modes": ["peripheral", "central"],
+          "bluetoothAlwaysPermission": "Allow Goshala Application to connect to RFID scanners"
+        }
+      ]
+    ],
+    "android": {
+      "permissions": [
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_CONNECT",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA"
+      ]
+    }
+  }
+}
