@@ -38,3 +38,17 @@ cd ../frontend
 ```bash
 npm install axios react-router-dom chart.js react-chartjs-2 html5-qrcode socket.io-client qrcode react-icons
 ```
+
+
+#🍥Run these commands after Database – Prisma Schema (backend/prisma/schema.prisma):
+
+```bash
+cd backend
+```
+```bash
+npx prisma generate
+```
+```bash
+npx prisma db push
+```
+
