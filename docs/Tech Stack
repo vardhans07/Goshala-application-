@@ -1,0 +1,8 @@
+Frontend: React + Vite
+Backend: Node.js + Express
+Database: PostgreSQL + Prisma
+Real-time: Socket.io
+QR Scan: html5-qrcode (web)
+Reports: ExcelJS + PDFKit
+Auth: JWT + bcrypt
+Finance/Billing/Donations: Full module
