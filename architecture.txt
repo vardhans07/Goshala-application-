@@ -1,0 +1,20 @@
+cow-tag-app/
+├── backend/
+│   ├── prisma/schema.prisma
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── middleware/auth.ts
+│   │   └── server.ts
+│   └── package.json
+├── frontend/                  ← React
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── RegisterAnimal.tsx
+│   │   │   ├── ScanAttendance.tsx     ← Camera + Bluetooth
+│   │   │   ├── Dashboard.tsx
+│   │   │   └── Finance.tsx
+│   │   ├── components/QRScanner.tsx
+│   │   └── store/ (Zustand)
+│   └── vite.config.ts
+└── README.md
