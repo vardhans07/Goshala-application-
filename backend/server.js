@@ -8,8 +8,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const QRCode = require('qrcode');
-const ExcelJS = require('exceljs');
-const PDFDocument = require('pdfkit');
 
 dotenv.config();
 
@@ -17,7 +15,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
 
-// Prisma 7 Adapter Setup
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
@@ -26,6 +23,39 @@ const SECRET = process.env.JWT_SECRET || 'supersecretkey123';
 app.use(cors());
 app.use(express.json());
 
+// ====================== AUTH ======================
+app.post('/api/register', async (req, res) => {
+  const { username, password, name, role = 'STAFF' } = req.body;
+  const hash = await bcrypt.hash(password, 10);
+  try {
+    const user = await prisma.user.create({ 
+      data: { username, passwordHash: hash, name, role } 
+    });
+    res.json({ message: 'User registered successfully', user });
+  } catch (e) {
+    res.status(400).json({ error: 'Username already exists' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '24h' });
+    res.json({ 
+      token, 
+      user: { id: user.id, name: user.name, role: user.role } 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Auth Middleware
 const auth = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No token' });
@@ -36,33 +66,17 @@ const auth = (req, res, next) => {
   });
 };
 
-// Auth
-app.post('/api/register', async (req, res) => {
-  const { username, password, name, role = 'STAFF' } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  try {
-    const user = await prisma.user.create({ data: { username, passwordHash: hash, name, role } });
-    res.json({ message: 'User registered', user });
-  } catch (e) {
-    res.status(400).json({ error: 'Username already exists' });
-  }
-});
-
-app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-  const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '24h' });
-  res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
-});
-
-// Animals + QR
+// Animal + QR (photo optional)
 app.post('/api/animals', auth, async (req, res) => {
-  const animal = await prisma.animal.create({ data: req.body });
+  const { photoUrl, ...data } = req.body;
+  const animal = await prisma.animal.create({ 
+    data: { ...data, photoUrl: photoUrl || null } 
+  });
   const qrDataUrl = await QRCode.toDataURL(animal.tagCode, { width: 300 });
-  await prisma.animal.update({ where: { id: animal.id }, data: { qrCodeUrl: qrDataUrl } });
+  await prisma.animal.update({ 
+    where: { id: animal.id }, 
+    data: { qrCodeUrl: qrDataUrl } 
+  });
   res.json({ ...animal, qrCodeUrl });
 });
 
