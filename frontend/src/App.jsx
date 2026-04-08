@@ -12,10 +12,14 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    }
-  }, [token]);
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) setToken(savedToken);
+  }, []);
+
+  const handleLogin = (newToken) => {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -28,11 +32,26 @@ function App() {
       
       <div className="min-h-screen bg-slate-50">
         <Routes>
-          <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Login setToken={setToken} />} />
-          <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/" />} />
-          <Route path="/animals" element={token ? <Animals /> : <Navigate to="/" />} />
-          <Route path="/scanner" element={token ? <Scanner /> : <Navigate to="/" />} />
-          <Route path="/reports" element={token ? <Reports /> : <Navigate to="/" />} />
+          <Route 
+            path="/" 
+            element={token ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />} 
+          />
+          <Route 
+            path="/dashboard" 
+            element={token ? <Dashboard /> : <Navigate to="/" replace />} 
+          />
+          <Route 
+            path="/animals" 
+            element={token ? <Animals /> : <Navigate to="/" replace />} 
+          />
+          <Route 
+            path="/scanner" 
+            element={token ? <Scanner /> : <Navigate to="/" replace />} 
+          />
+          <Route 
+            path="/reports" 
+            element={token ? <Reports /> : <Navigate to="/" replace />} 
+          />
         </Routes>
       </div>
     </Router>
