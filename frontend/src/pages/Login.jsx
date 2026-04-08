@@ -1,68 +1,79 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login({ setToken }) {
+export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
+    console.log('Attempting login with:', username); // Debugging
+
     try {
       const res = await axios.post('http://localhost:5000/api/login', { username, password });
-      localStorage.setItem('token', res.data.token);
-      setToken(res.data.token);
+      console.log('Login response:', res.data); // Debugging
+
+      if (res.data.token) {
+        onLogin(res.data.token);
+      } else {
+        setError('No token received');
+      }
     } catch (err) {
-      setError('Invalid username or password');
+      console.error('Login failed:', err.response?.data || err.message);
+      setError(err.response?.data?.error || 'Invalid username or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
-      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🐄</div>
-          <h1 className="text-3xl font-bold text-green-800">Goshala Management</h1>
-          <p className="text-gray-600 mt-2">Login to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+      <div className="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-md">
+        <div className="text-center mb-10">
+          <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center text-6xl mb-6 shadow-inner">
+            🐄
+          </div>
+          <h1 className="text-4xl font-bold text-green-900">Goshala QR System</h1>
+          <p className="text-emerald-600 mt-2">Daily Attendance & Management</p>
         </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit} className="space-y-8">
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:border-green-500"
+            className="w-full px-6 py-4 border border-gray-300 rounded-2xl focus:border-emerald-600 text-lg"
             required
           />
+
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl mb-6 focus:outline-none focus:border-green-500"
+            className="w-full px-6 py-4 border border-gray-300 rounded-2xl focus:border-emerald-600 text-lg"
             required
           />
 
-          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+          {error && <p className="text-red-600 text-center font-medium">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3.5 rounded-xl transition"
+            className="w-full bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold py-5 rounded-3xl text-xl disabled:bg-gray-400 transition"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          First time? Register user using Postman on /api/register
+        <p className="text-center text-sm text-gray-500 mt-8">
+          First time? Register using Postman on <span className="font-mono">/api/register</span>
         </p>
       </div>
     </div>
