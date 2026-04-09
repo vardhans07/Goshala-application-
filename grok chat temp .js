@@ -30,7 +30,20 @@ https://tailwindcss.com/plus/ui-blocks/marketing/elements/headers
 
 https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/navbars
 
+#extra github files
+https://github.com/jigar-sable/flipkart-mern/
 
+https://github.com/cenfun/monocart-reporter
+
+https://github.com/msafeerhassan/cattlefarmmanagement
+
+https://github.com/ZakaryaMeddahi/milky-farm
+
+https://github.com/Farm-Orbit/farmorb_web?tab=readme-ov-file
+
+https://github.com/sadaqat120/FYP_FMS
+
+https://github.com/sadaqat120/FYP_FMS/blob/main/frontend/src/components/Authentication/LoginModal.js
 
 
 
