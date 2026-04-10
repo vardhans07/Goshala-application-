@@ -4,7 +4,7 @@ Goshala-application/                          ← Root folder
 │   │   └── schema.prism
 │   │   
 │   ├── .env
-    ├── server.js                 
+│   ├── server.js                 
 │   └── package.json
 │
 ├── frontend/                         ← React + Vite + Bootstrap 5
