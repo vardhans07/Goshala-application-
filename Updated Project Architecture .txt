@@ -1,22 +1,10 @@
-cow-tag-app/                          ← Root folder
+Goshala-application/                          ← Root folder
 ├── backend/                          ← Node.js + Prisma + Express
 │   ├── prisma/
-│   │   └── schema.prisma
-│   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── authController.js
-│   │   │   ├── animalController.js
-│   │   │   ├── scanController.js
-│   │   │   └── reportController.js
-│   │   ├── routes/
-│   │   │   ├── authRoutes.js
-│   │   │   ├── animalRoutes.js
-│   │   │   ├── scanRoutes.js
-│   │   │   └── reportRoutes.js
-│   │   ├── middleware/
-│   │   │   └── auth.js
-│   │   └── server.js                 ← Main entry point
+│   │   └── schema.prism
+│   │   
 │   ├── .env
+    ├── server.js                 
 │   └── package.json
 │
 ├── frontend/                         ← React + Vite + Bootstrap 5
@@ -25,8 +13,6 @@ cow-tag-app/                          ← Root folder
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx            ← Updated Bootstrap navbar
-│   │   │   ├── QRScanner.jsx
-│   │   │   └── ProtectedRoute.jsx
 │   │   ├── pages/
 │   │   │   ├── Login.jsx
 │   │   │   ├── Dashboard.jsx
