@@ -3,3 +3,74 @@ npx prisma migrate dev --name add_goshala_support
 npx prisma generate
 
 
+npx prisma generate
+npm run dev
+
+
+POST http://localhost:5000/api/goshalas
+
+{
+  "name": "Shree Ram Goshala",
+  "location": "Thane, Maharashtra",
+  "description": "First test goshala"
+}
+
+
+POST http://localhost:5000/api/register
+
+{
+  "username": "admin",
+  "password": "admin123",
+  "name": "Super Admin",
+  "role": "ADMIN",
+  "goshalaId": 1
+}
+
+
+http://localhost:5000/api/goshala
+
+{
+  "name": "Main Goshala",
+  "location": "Mumbai"
+}
+
+
+
+
+cd backend
+
+# Delete old migrations
+rm -rf prisma/migrations
+
+# Create fresh migration with the full multi-goshala schema
+npx prisma migrate dev --name init_goshala
+
+# Generate client
+npx prisma generate
+
+# Start backend
+npm run dev
+
+
+
+ http://localhost:5000/api/goshala
+
+{
+  "name": "First Goshala",
+  "location": "UP"
+}
+
+
+http://localhost:5000/api/register
+{
+  "username": "raj1",
+  "password": "raj123",
+  "name": "Staff2",
+  "role": "STAFF",
+  "goshalaId": 1
+}
+
+https://vdi.sbigeneral.in/
+
+
+ https://myaccount.google.com/apppasswords

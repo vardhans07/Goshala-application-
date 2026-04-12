@@ -7,24 +7,30 @@ datasource db {
 }
 
 model Goshala {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  location  String?
-  createdAt DateTime @default(now())
-  users     User[]
-  animals   Animal[]
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  location    String?
+  ownerEmail  String?  @unique
+  ownerMobile String?  @unique
+  createdAt   DateTime @default(now())
+  users       User[]
+  animals     Animal[]
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  username      String   @unique
-  passwordHash  String
-  name          String
-  role          Role     @default(STAFF)
-  goshalaId     Int
-  createdAt     DateTime @default(now())
-  goshala       Goshala  @relation(fields: [goshalaId], references: [id])
-  scans         Scan[]
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  email        String?  @unique
+  mobile       String?  @unique
+  passwordHash String
+  name         String
+  role         Role     @default(STAFF)
+  goshalaId    Int
+  createdAt    DateTime @default(now())
+  goshala      Goshala  @relation(fields: [goshalaId], references: [id])
+  scans        Scan[]
+
+  @@index([goshalaId])
 }
 
 enum Role {
@@ -33,8 +39,8 @@ enum Role {
 }
 
 model Animal {
-  id          Int      @id @default(autoincrement())
-  tagCode     String   @unique
+  id          Int          @id @default(autoincrement())
+  tagCode     String       @unique
   name        String?
   breed       String
   age         Int?
@@ -43,8 +49,8 @@ model Animal {
   photoUrl    String?
   qrCodeUrl   String?
   goshalaId   Int
-  createdAt   DateTime @default(now())
-  goshala     Goshala  @relation(fields: [goshalaId], references: [id])
+  createdAt   DateTime     @default(now())
+  goshala     Goshala      @relation(fields: [goshalaId], references: [id])
   scans       Scan[]
 }
 
@@ -56,16 +62,16 @@ enum AnimalStatus {
 }
 
 model Scan {
-  id              Int      @id @default(autoincrement())
-  animalId        Int
-  userId          Int
-  scanTimestamp   DateTime @default(now())
-  latitude        Float?
-  longitude       Float?
-  scanMethod      String   @default("QR")
-  status          String
-  isDuplicate     Boolean  @default(false)
-  notes           String?
-  animal          Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
-  user            User     @relation(fields: [userId], references: [id])
+  id            Int      @id @default(autoincrement())
+  animalId      Int
+  userId        Int
+  scanTimestamp DateTime @default(now())
+  latitude      Float?
+  longitude     Float?
+  scanMethod    String   @default("QR")
+  status        String
+  isDuplicate   Boolean  @default(false)
+  notes         String?
+  animal        Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id])
 }
