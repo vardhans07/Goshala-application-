@@ -635,6 +635,90 @@ app.delete('/api/users/:id', auth, adminOnly, async (req, res) => {
   }
 });
 
+
+// Forgot Password - Send OTP
+app.post('/api/forgot-password/send-otp', async (req, res) => {
+  const { email } = req.body;
+  if (!email || !isEmail(email)) {
+    return res.status(400).json({ error: 'Valid email is required' });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (!user) return res.status(404).json({ error: 'No account found with this email' });
+
+    const otp = generateOtp();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    otpStore.set(email.toLowerCase(), { otp, expiresAt, verified: false });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Goshala QR - Password Reset OTP',
+      html: `
+        <h2>Password Reset OTP</h2>
+        <p>Your OTP is: <strong>${otp}</strong></p>
+        <p>This OTP is valid for 10 minutes.</p>
+      `
+    });
+
+    res.json({ message: 'OTP sent to your email' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Failed to send OTP' });
+  }
+});
+
+// Verify OTP
+app.post('/api/forgot-password/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  const lowerEmail = email.toLowerCase();
+
+  try {
+    const data = otpStore.get(lowerEmail);
+    if (!data) return res.status(400).json({ error: 'No OTP request found' });
+    if (Date.now() > data.expiresAt) {
+      otpStore.delete(lowerEmail);
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+    if (data.otp !== otp) return res.status(400).json({ error: 'Invalid OTP' });
+
+    data.verified = true;
+    otpStore.set(lowerEmail, data);
+
+    res.json({ message: 'OTP verified successfully' });
+  } catch (e) {
+    res.status(500).json({ error: 'Verification failed' });
+  }
+});
+
+// Reset Password
+app.post('/api/forgot-password/reset', async (req, res) => {
+  const { email, newPassword } = req.body;
+  const lowerEmail = email.toLowerCase();
+
+  try {
+    const data = otpStore.get(lowerEmail);
+    if (!data || !data.verified) return res.status(400).json({ error: 'OTP not verified' });
+
+    const user = await prisma.user.findUnique({ where: { email: lowerEmail } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const hash = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { email: lowerEmail },
+      data: { passwordHash: hash }
+    });
+
+    otpStore.delete(lowerEmail);
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
 app.post('/api/feedback', async (req, res) => {
   try {
     const name = normalizeText(req.body.name);
