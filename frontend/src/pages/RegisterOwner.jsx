@@ -13,110 +13,24 @@ const RegisterOwner = () => {
     password: "",
     email: "",
     mobile: "",
-    otp: "",
   });
 
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    if (name === "email") {
-      setOtpSent(false);
-      setOtpVerified(false);
-    }
-  };
-
-  const sendOtp = async () => {
-    setError("");
-    setSuccess("");
-
-    if (!form.email.trim()) {
-      setError("Please enter email for OTP");
-      return;
-    }
-
-    setOtpLoading(true);
-
-    try {
-      const payload = {
-        email: form.email.trim(),
-        mobile: form.mobile.trim(),
-      };
-
-      const res = await axios.post(
-        "http://localhost:5000/api/register-owner/send-otp",
-        payload,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      setOtpSent(true);
-      setSuccess(res.data.message || "OTP sent successfully");
-    } catch (err) {
-      setError(err.response?.data?.error || "Failed to send OTP");
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  const verifyOtp = async () => {
-    setError("");
-    setSuccess("");
-
-    if (!form.email.trim() || !form.otp.trim()) {
-      setError("Email and OTP are required");
-      return;
-    }
-
-    setVerifyLoading(true);
-
-    try {
-      const payload = {
-        email: form.email.trim(),
-        mobile: form.mobile.trim(),
-        otp: form.otp.trim(),
-      };
-
-      const res = await axios.post(
-        "http://localhost:5000/api/register-owner/verify-otp",
-        payload,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      setOtpVerified(true);
-      setSuccess(res.data.message || "OTP verified");
-    } catch (err) {
-      setError(err.response?.data?.error || "OTP verification failed");
-    } finally {
-      setVerifyLoading(false);
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-
-    if (!otpVerified) {
-      setError("Please verify OTP first");
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -130,20 +44,19 @@ const RegisterOwner = () => {
         mobile: form.mobile.trim(),
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/register-owner",
-        payload,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const res = await axios.post("http://localhost:5000/api/register-owner", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       setSuccess(res.data.message || "Owner registered successfully");
 
-      setTimeout(() => {
-        navigate("/");
-      }, 1200);
+     setTimeout(() => {
+  navigate("/login");
+}, 1200);
     } catch (err) {
+      console.error("Register owner error:", err);
       setError(err.response?.data?.error || "Registration failed");
     } finally {
       setLoading(false);
@@ -222,84 +135,41 @@ const RegisterOwner = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Email (required for OTP)</label>
+                  <label className="form-label">Email</label>
                   <input
                     type="email"
                     className="form-control"
                     name="email"
                     value={form.email}
                     onChange={handleChange}
-                    placeholder="Enter email"
-                    required
+                    placeholder="Enter email or leave blank if using mobile"
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Mobile (optional)</label>
+                  <label className="form-label">Mobile</label>
                   <input
                     type="text"
                     className="form-control"
                     name="mobile"
                     value={form.mobile}
                     onChange={handleChange}
-                    placeholder="Enter mobile"
+                    placeholder="Enter mobile or leave blank if using email"
                   />
                 </div>
-
-                <div className="d-grid mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={sendOtp}
-                    disabled={!form.email.trim() || otpVerified || otpLoading}
-                  >
-                    {otpLoading ? "Sending OTP..." : "Send OTP"}
-                  </button>
-                </div>
-
-                {otpSent && (
-                  <>
-                    <div className="mb-3">
-                      <label className="form-label">Enter OTP</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="otp"
-                        value={form.otp}
-                        onChange={handleChange}
-                        placeholder="Enter 6-digit OTP"
-                      />
-                    </div>
-
-                    <div className="d-grid mb-3">
-                      <button
-                        type="button"
-                        className="btn btn-outline-success"
-                        onClick={verifyOtp}
-                        disabled={!form.otp.trim() || otpVerified || verifyLoading}
-                      >
-                        {otpVerified
-                          ? "OTP Verified"
-                          : verifyLoading
-                          ? "Verifying..."
-                          : "Verify OTP"}
-                      </button>
-                    </div>
-                  </>
-                )}
 
                 <button
                   type="submit"
                   className="btn btn-success w-100"
-                  disabled={loading || !otpVerified}
+                  disabled={loading}
                 >
                   {loading ? "Registering..." : "Register Owner"}
                 </button>
               </form>
 
-              <p className="text-center mt-3 mb-0">
-                Already have an account? <Link to="/">Login</Link>
-              </p>
+             <p className="text-center mt-3 mb-0">
+  Already have an account? <Link to="/login">Login here</Link>
+</p>
             </div>
           </div>
         </div>

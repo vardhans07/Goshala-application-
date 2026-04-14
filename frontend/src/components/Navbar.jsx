@@ -1,7 +1,11 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 
 export default function Navbar({ logout, user }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
   const navLinkClass = ({ isActive }) =>
     `custom-nav-link ${isActive ? 'active' : ''}`;
 
@@ -13,6 +17,7 @@ export default function Navbar({ logout, user }) {
             <NavLink
               to="/dashboard"
               className="navbar-brand d-flex align-items-center gap-2 mb-0 text-decoration-none"
+              onClick={() => setMobileOpen(false)}
             >
               <div
                 className="logo-wrap overflow-hidden rounded-circle"
@@ -33,24 +38,33 @@ export default function Navbar({ logout, user }) {
               </div>
             </NavLink>
 
-            <ul className="navbar-links">
+            {/* Hamburger Button - Only on Mobile */}
+            <button
+              className="navbar-toggler d-lg-none"
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+
+            <ul className={`navbar-links ${mobileOpen ? 'show-mobile' : ''}`}>
               <li>
-                <NavLink to="/dashboard" className={navLinkClass}>
+                <NavLink to="/dashboard" className={navLinkClass} onClick={() => setMobileOpen(false)}>
                   Dashboard
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/animals" className={navLinkClass}>
+                <NavLink to="/animals" className={navLinkClass} onClick={() => setMobileOpen(false)}>
                   Animals
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/scanner" className={navLinkClass}>
+                <NavLink to="/scanner" className={navLinkClass} onClick={() => setMobileOpen(false)}>
                   Scan
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/reports" className={navLinkClass}>
+                <NavLink to="/reports" className={navLinkClass} onClick={() => setMobileOpen(false)}>
                   Reports
                 </NavLink>
               </li>
@@ -62,7 +76,6 @@ export default function Navbar({ logout, user }) {
                   <div className="user-avatar">
                     {user.name?.[0]?.toUpperCase() || 'U'}
                   </div>
-
                   <div className="lh-sm">
                     <div className="fw-semibold text-white user-name">
                       {user.name || 'User'}
@@ -75,7 +88,10 @@ export default function Navbar({ logout, user }) {
               )}
 
               <button
-                onClick={logout}
+                onClick={() => {
+                  setMobileOpen(false);
+                  logout();
+                }}
                 className="logout-btn"
               >
                 <FaSignOutAlt />
@@ -219,6 +235,7 @@ export default function Navbar({ logout, user }) {
           box-shadow: 0 8px 18px rgba(220, 53, 69, 0.25);
         }
 
+        /* Mobile Improvements */
         @media (max-width: 991.98px) {
           .navbar-inner {
             grid-template-columns: 1fr;
@@ -229,10 +246,13 @@ export default function Navbar({ logout, user }) {
 
           .navbar-links {
             flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
           }
 
           .navbar-user-area {
             justify-content: center;
+            width: 100%;
           }
 
           .user-pill {

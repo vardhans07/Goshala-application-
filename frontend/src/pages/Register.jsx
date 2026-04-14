@@ -191,9 +191,9 @@ const RegisterOwner = () => {
                 </button>
               </form>
 
-              <p className="text-center mt-3 mb-0">
-                Already have an account? <Link to="/">Login</Link>
-              </p>
+             <p className="text-center mt-3 mb-0">
+  Already have an account? <Link to="/login">Login here</Link>
+</p>
             </div>
           </div>
         </div>
