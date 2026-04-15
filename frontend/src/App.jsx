@@ -34,35 +34,19 @@ function PublicRoute({ token, children }) {
 function PublicNavbar({ token }) {
   const publicPaths = ['/', '/about', '/contact'];
   const { pathname } = useLocation();
-
-  // Show navbar only if:
-  // - not logged in, or
-  // - on public routes and not logged in
-  // => When logged in, never show About / Contact in navbar
   const showNav = !token && publicPaths.includes(pathname);
-
   if (!showNav) return null;
 
   return (
     <nav className="navbar navbar-dark bg-success shadow-sm sticky-top">
       <div className="container d-flex justify-content-center">
         <div className="d-flex align-items-center gap-5">
-          <Link className="nav-link text-white fw-bold" to="/about">
-            About
-          </Link>
-
-          <Link className="nav-link text-white fw-bold" to="/contact">
-            Contact Us
-          </Link>
-
+          <Link className="nav-link text-white fw-bold" to="/about">About</Link>
+          <Link className="nav-link text-white fw-bold" to="/contact">Contact Us</Link>
           {!token && (
             <>
-              <Link className="btn btn-light btn-sm mx-2 px-3" to="/login">
-                Login
-              </Link>
-              <Link className="btn btn-outline-light btn-sm mx-2 px-3" to="/register">
-                Register
-              </Link>
+              <Link className="btn btn-light btn-sm mx-2 px-3" to="/login">Login</Link>
+              <Link className="btn btn-outline-light btn-sm mx-2 px-3" to="/register">Register</Link>
             </>
           )}
         </div>
@@ -71,59 +55,79 @@ function PublicNavbar({ token }) {
   );
 }
 
+// Polished & Smaller Floating Home Button for Mobile
 function FloatingHomeButton() {
-  const isMobile = window.innerWidth <= 768;
+  const location = useLocation();
+  const [isVisible, setIsVisible] = useState(true);
 
-  const buttonStyle = {
-    position: 'fixed',
-    // Push it down a bit
-    top: isMobile ? '80px' : '100px',  // was ~14px / 18px; now 80/100px
-    right: isMobile ? '12px' : '20px',
-    zIndex: 99999,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    textDecoration: 'none',
-    backgroundImage: 'linear-gradient(135deg, #ff7a18 0%, #ffb347 100%)',
-    color: '#1f1f1f',
-    fontWeight: 700,
-    fontSize: isMobile ? '13px' : '14px',
-    borderRadius: '999px',
-    padding: isMobile ? '9px 13px' : '11px 17px',
-    boxShadow: '0 10px 24px rgba(255, 122, 24, 0.28)',
-    border: '1px solid rgba(255,255,255,0.45)',
-    transition: 'all 0.25s ease',
-  };
+  const showButton = !['/dashboard', '/animals', '/scanner', '/reports'].includes(location.pathname);
+
+  if (!showButton) return null;
+
+  // Hide when scrolling down, show when near top
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        setIsVisible(false);
+      } else if (currentScrollY < 40) {
+        setIsVisible(true);
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!isVisible) return null;
 
   return (
     <Link
       to="/"
       title="Go to Home"
       aria-label="Go to home page"
-      style={buttonStyle}
+      style={{
+        position: 'fixed',
+        top: '110px',
+        right: '16px',
+        zIndex: 99999,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '6px',
+        textDecoration: 'none',
+        backgroundImage: 'linear-gradient(135deg, #ff7a18 0%, #ffb347 100%)',
+        color: '#1f1f1f',
+        fontWeight: 700,
+        fontSize: '13px',           // Smaller text on mobile
+        borderRadius: '999px',
+        padding: '8px 16px',        // Smaller padding
+        boxShadow: '0 8px 20px rgba(255, 122, 24, 0.35)',
+        border: '1px solid rgba(255,255,255,0.5)',
+        minWidth: '98px',           // More compact width
+        transition: 'all 0.25s ease',
+      }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-        e.currentTarget.style.boxShadow = '0 14px 28px rgba(255, 122, 24, 0.36)';
-        e.currentTarget.style.backgroundImage =
-          'linear-gradient(135deg, #ff8c32 0%, #ffd27a 100%)';
+        e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)';
+        e.currentTarget.style.boxShadow = '0 12px 24px rgba(255, 122, 24, 0.45)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0) scale(1)';
-        e.currentTarget.style.boxShadow = '0 10px 24px rgba(255, 122, 24, 0.28)';
-        e.currentTarget.style.backgroundImage =
-          'linear-gradient(135deg, #ff7a18 0%, #ffb347 100%)';
+        e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 122, 24, 0.35)';
       }}
     >
-      <FaHome size={14} />
-      Home
+      <FaHome size={15} /> Home
     </Link>
   );
 }
 
 function AppLayout({ token, user, logout, onLogin }) {
   const location = useLocation();
-
   const protectedPaths = ['/dashboard', '/animals', '/scanner', '/reports'];
   const showProtectedNavbar = token && protectedPaths.includes(location.pathname);
 
@@ -181,25 +185,13 @@ function AppLayout({ token, user, logout, onLogin }) {
 
 function AppContent({ token, user, logout, onLogin }) {
   const location = useLocation();
-
- const showFloatingHomeButton =
-  !token &&
-  ([
-    '/login',
-    '/register',
-    '/forgot-password',
-    '/about',
-    '/contact',
-  ].includes(location.pathname));
+  const showFloatingHomeButton =
+    !token &&
+    ['/login', '/register', '/forgot-password', '/about', '/contact'].includes(location.pathname);
 
   return (
     <>
-      <AppLayout
-        token={token}
-        user={user}
-        logout={logout}
-        onLogin={onLogin}
-      />
+      <AppLayout token={token} user={user} logout={logout} onLogin={onLogin} />
       {showFloatingHomeButton && <FloatingHomeButton />}
     </>
   );
@@ -240,12 +232,7 @@ export default function App() {
 
   return (
     <Router>
-      <AppContent
-        token={token}
-        user={user}
-        logout={logout}
-        onLogin={onLogin}
-      />
+      <AppContent token={token} user={user} logout={logout} onLogin={onLogin} />
     </Router>
   );
 }
