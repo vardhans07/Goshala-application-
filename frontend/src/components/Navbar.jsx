@@ -1,18 +1,26 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 
 export default function Navbar({ logout, user }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
   const navLinkClass = ({ isActive }) =>
     `custom-nav-link ${isActive ? 'active' : ''}`;
+
+  const closeMenu = () => setMobileOpen(false);
 
   return (
     <>
       <nav className="navbar navbar-dark sticky-top shadow-sm goshala-navbar">
         <div className="container-fluid px-3 px-lg-4">
           <div className="navbar-inner w-100">
+            {/* Logo */}
             <NavLink
               to="/dashboard"
               className="navbar-brand d-flex align-items-center gap-2 mb-0 text-decoration-none"
+              onClick={closeMenu}
             >
               <div
                 className="logo-wrap overflow-hidden rounded-circle"
@@ -33,36 +41,46 @@ export default function Navbar({ logout, user }) {
               </div>
             </NavLink>
 
-            <ul className="navbar-links">
+            {/* Hamburger Button - Visible only on mobile */}
+            <button
+              className="navbar-toggler d-lg-none"
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+
+            {/* Nav Links */}
+            <ul className={`navbar-links ${mobileOpen ? 'd-block' : 'd-none d-lg-flex'}`}>
               <li>
-                <NavLink to="/dashboard" className={navLinkClass}>
+                <NavLink to="/dashboard" className={navLinkClass} onClick={closeMenu}>
                   Dashboard
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/animals" className={navLinkClass}>
+                <NavLink to="/animals" className={navLinkClass} onClick={closeMenu}>
                   Animals
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/scanner" className={navLinkClass}>
+                <NavLink to="/scanner" className={navLinkClass} onClick={closeMenu}>
                   Scan
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/reports" className={navLinkClass}>
+                <NavLink to="/reports" className={navLinkClass} onClick={closeMenu}>
                   Reports
                 </NavLink>
               </li>
             </ul>
 
+            {/* User Area */}
             <div className="navbar-user-area">
               {user && (
                 <div className="user-pill">
                   <div className="user-avatar">
                     {user.name?.[0]?.toUpperCase() || 'U'}
                   </div>
-
                   <div className="lh-sm">
                     <div className="fw-semibold text-white user-name">
                       {user.name || 'User'}
@@ -75,7 +93,10 @@ export default function Navbar({ logout, user }) {
               )}
 
               <button
-                onClick={logout}
+                onClick={() => {
+                  closeMenu();
+                  logout();
+                }}
                 className="logout-btn"
               >
                 <FaSignOutAlt />
@@ -219,28 +240,27 @@ export default function Navbar({ logout, user }) {
           box-shadow: 0 8px 18px rgba(220, 53, 69, 0.25);
         }
 
+        /* Mobile Fix */
         @media (max-width: 991.98px) {
           .navbar-inner {
             grid-template-columns: 1fr;
-            gap: 14px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            gap: 12px;
+            padding: 12px 0;
           }
 
           .navbar-links {
-            flex-wrap: wrap;
+            flex-direction: column;
+            width: 100%;
+            gap: 8px;
           }
 
           .navbar-user-area {
             justify-content: center;
-          }
-
-          .user-pill {
             width: 100%;
-            justify-content: center;
           }
 
-          .logout-btn {
+          .user-pill, .logout-btn {
+            width: 100%;
             justify-content: center;
           }
         }
