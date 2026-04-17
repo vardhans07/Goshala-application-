@@ -17,7 +17,10 @@ export default function Reports() {
       link.href = url;
       const extension = format === 'excel' ? 'xlsx' : 'pdf';
       link.download = `Goshala_${period}_report.${extension}`;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       alert('Download failed. Make sure backend is running.');
     }
@@ -28,70 +31,75 @@ export default function Reports() {
       <div className="app-container">
         <div className="page-header">
           <h1 className="page-title">Reports & Analytics</h1>
-          <p className="page-subtitle">Download professional attendance reports</p>
+          <p className="page-subtitle">Professional attendance reports for your Goshala</p>
         </div>
 
-        <div className="app-card p-6 md:p-8">
-          <div className="mx-auto mb-10 flex w-full max-w-3xl flex-wrap justify-center gap-3 rounded-3xl border border-emerald-100 bg-emerald-50 p-3">
-            {['daily', 'weekly', 'monthly', 'yearly'].map((p) => {
-              const active = period === p;
-
-              return (
-                <button
-                  key={p}
-                  onClick={() => setPeriod(p)}
-                  className={
-                    active
-                      ? '!bg-green-700 !text-white !border-green-700 min-w-[120px] rounded-2xl border px-5 py-3 text-sm font-semibold shadow-md transition-all duration-200 md:text-base'
-                      : 'min-w-[120px] rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 md:text-base'
-                  }
-                >
-                  {p.toUpperCase()}
-                </button>
-              );
-            })}
+        <div className="app-card p-8">
+          {/* Period Selector */}
+          <div className="mx-auto mb-12 flex w-full max-w-3xl flex-wrap justify-center gap-3 rounded-3xl border border-emerald-100 bg-emerald-50 p-4">
+            {['daily', 'weekly', 'monthly', 'yearly'].map((p) => (
+              <button
+                key={p}
+                onClick={() => setPeriod(p)}
+                className={`min-w-[110px] rounded-2xl px-6 py-3 text-sm font-semibold transition-all duration-200 md:text-base ${
+                  period === p
+                    ? 'bg-green-700 text-white shadow-md'
+                    : 'border border-gray-200 bg-white text-gray-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600'
+                }`}
+              >
+                {p.charAt(0).toUpperCase() + p.slice(1)}
+              </button>
+            ))}
           </div>
 
-          <div className="grid grid-cols-1 gap-6 mx-auto max-w-4xl md:grid-cols-2">
-            <div className="rounded-[24px] border border-emerald-100 bg-gradient-to-br from-green-500 to-emerald-600 p-8 md:p-10 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-3xl text-white">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* Excel Card */}
+            <div className="group rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-600 to-green-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
                 📊
               </div>
-              <h3 className="text-2xl font-bold text-white">Excel Report</h3>
-              <p className="mt-2 text-green-50">Download {period} attendance spreadsheet</p>
-
-              <div className="mt-6 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white">
-                  Export as .xlsx
+              <h3 className="text-3xl font-bold text-white">Excel Report</h3>
+              <p className="mt-3 text-emerald-100 text-lg">
+                Download detailed {period} attendance in spreadsheet format
+              </p>
+              <div className="mt-8 flex items-center justify-between">
+                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-white">
+                  .xlsx • Editable
                 </span>
                 <button
                   onClick={() => download('excel')}
-                  className="rounded-xl bg-white px-5 py-2.5 font-semibold text-green-700 transition hover:bg-green-50"
+                  className="rounded-2xl bg-white px-8 py-3 font-semibold text-emerald-700 transition hover:bg-emerald-50 hover:shadow"
                 >
-                  Download
+                  Download Excel
                 </button>
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-rose-100 bg-gradient-to-br from-rose-500 to-red-600 p-8 md:p-10 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-3xl text-white">
+            {/* PDF Card */}
+            <div className="group rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-600 to-red-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
                 📄
               </div>
-              <h3 className="text-2xl font-bold text-white">PDF Report</h3>
-              <p className="mt-2 text-rose-50">Download {period} printable report</p>
-
-              <div className="mt-6 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white">
-                  Export as .pdf
+              <h3 className="text-3xl font-bold text-white">PDF Report</h3>
+              <p className="mt-3 text-rose-100 text-lg">
+                Clean printable {period} report with Goshala branding
+              </p>
+              <div className="mt-8 flex items-center justify-between">
+                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-white">
+                  .pdf • Professional
                 </span>
                 <button
                   onClick={() => download('pdf')}
-                  className="rounded-xl bg-white px-5 py-2.5 font-semibold text-rose-700 transition hover:bg-rose-50"
+                  className="rounded-2xl bg-white px-8 py-3 font-semibold text-rose-700 transition hover:bg-rose-50 hover:shadow"
                 >
-                  Download
+                  Download PDF
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="mt-10 text-center text-sm text-gray-500">
+            Reports include Goshala name, date range, attendance summary, and detailed scan logs.
           </div>
         </div>
       </div>

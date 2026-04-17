@@ -31,6 +31,7 @@ function PublicRoute({ token, children }) {
   return token ? <Navigate to="/dashboard" replace /> : children;
 }
 
+// Improved Public Navbar - Better mobile responsiveness
 function PublicNavbar({ token }) {
   const publicPaths = ['/', '/about', '/contact'];
   const { pathname } = useLocation();
@@ -39,15 +40,28 @@ function PublicNavbar({ token }) {
 
   return (
     <nav className="navbar navbar-dark bg-success shadow-sm sticky-top">
-      <div className="container d-flex justify-content-center">
-        <div className="d-flex align-items-center gap-5">
+      <div className="container">
+        <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 py-2">
           <Link className="nav-link text-white fw-bold" to="/about">About</Link>
           <Link className="nav-link text-white fw-bold" to="/contact">Contact Us</Link>
+          
           {!token && (
-            <>
-              <Link className="btn btn-light btn-sm mx-2 px-3" to="/login">Login</Link>
-              <Link className="btn btn-outline-light btn-sm mx-2 px-3" to="/register">Register</Link>
-            </>
+            <div className="d-flex gap-2 mt-2 mt-md-0">
+              <Link 
+                className="btn btn-light btn-sm px-4" 
+                to="/login"
+                style={{ fontWeight: '600' }}
+              >
+                Login
+              </Link>
+              <Link 
+                className="btn btn-outline-light btn-sm px-4" 
+                to="/register"
+                style={{ fontWeight: '600' }}
+              >
+                Register
+              </Link>
+            </div>
           )}
         </div>
       </div>
@@ -55,7 +69,7 @@ function PublicNavbar({ token }) {
   );
 }
 
-// Polished & Smaller Floating Home Button for Mobile
+// Polished Floating Home Button (as per your last preference)
 function FloatingHomeButton() {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
@@ -64,19 +78,16 @@ function FloatingHomeButton() {
 
   if (!showButton) return null;
 
-  // Hide when scrolling down, show when near top
   useEffect(() => {
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
         setIsVisible(false);
       } else if (currentScrollY < 40) {
         setIsVisible(true);
       }
-      
       lastScrollY = currentScrollY;
     };
 
@@ -93,7 +104,7 @@ function FloatingHomeButton() {
       aria-label="Go to home page"
       style={{
         position: 'fixed',
-        top: '110px',
+        top: '88px',
         right: '16px',
         zIndex: 99999,
         display: 'inline-flex',
@@ -104,21 +115,19 @@ function FloatingHomeButton() {
         backgroundImage: 'linear-gradient(135deg, #ff7a18 0%, #ffb347 100%)',
         color: '#1f1f1f',
         fontWeight: 700,
-        fontSize: '13px',           // Smaller text on mobile
+        fontSize: '13px',
         borderRadius: '999px',
-        padding: '8px 16px',        // Smaller padding
+        padding: '8px 16px',
         boxShadow: '0 8px 20px rgba(255, 122, 24, 0.35)',
         border: '1px solid rgba(255,255,255,0.5)',
-        minWidth: '98px',           // More compact width
+        minWidth: '98px',
         transition: 'all 0.25s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)';
-        e.currentTarget.style.boxShadow = '0 12px 24px rgba(255, 122, 24, 0.45)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0) scale(1)';
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 122, 24, 0.35)';
       }}
     >
       <FaHome size={15} /> Home
@@ -211,7 +220,6 @@ export default function App() {
       setToken(savedToken);
       setUser(savedUser ? JSON.parse(savedUser) : null);
     };
-
     window.addEventListener('storage', syncAuth);
     return () => window.removeEventListener('storage', syncAuth);
   }, []);

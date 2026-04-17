@@ -20,11 +20,7 @@ export default function Navbar({ logout, user }) {
             <NavLink
               to="/dashboard"
               className="navbar-brand d-flex align-items-center gap-2 mb-0 text-decoration-none"
-<<<<<<< HEAD
-              onClick={() => setMobileOpen(false)}
-=======
               onClick={closeMenu}
->>>>>>> root-Login_patch_3
             >
               <div
                 className="logo-wrap overflow-hidden rounded-circle"
@@ -45,11 +41,7 @@ export default function Navbar({ logout, user }) {
               </div>
             </NavLink>
 
-<<<<<<< HEAD
-            {/* Hamburger Button - Only on Mobile */}
-=======
-            {/* Hamburger Button - Visible only on mobile */}
->>>>>>> root-Login_patch_3
+            {/* Hamburger - Only visible on mobile */}
             <button
               className="navbar-toggler d-lg-none"
               type="button"
@@ -58,52 +50,34 @@ export default function Navbar({ logout, user }) {
               <span className="navbar-toggler-icon"></span>
             </button>
 
-<<<<<<< HEAD
-            <ul className={`navbar-links ${mobileOpen ? 'show-mobile' : ''}`}>
-              <li>
-                <NavLink to="/dashboard" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-=======
-            {/* Nav Links */}
-            <ul className={`navbar-links ${mobileOpen ? 'd-block' : 'd-none d-lg-flex'}`}>
+            {/* Links - Desktop: horizontal | Mobile: vertical when opened */}
+            <ul className={`navbar-links ${mobileOpen ? 'd-flex flex-column w-100' : 'd-none d-lg-flex'}`}>
               <li>
                 <NavLink to="/dashboard" className={navLinkClass} onClick={closeMenu}>
->>>>>>> root-Login_patch_3
                   Dashboard
                 </NavLink>
               </li>
               <li>
-<<<<<<< HEAD
-                <NavLink to="/animals" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-=======
                 <NavLink to="/animals" className={navLinkClass} onClick={closeMenu}>
->>>>>>> root-Login_patch_3
                   Animals
                 </NavLink>
               </li>
               <li>
-<<<<<<< HEAD
-                <NavLink to="/scanner" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-=======
                 <NavLink to="/scanner" className={navLinkClass} onClick={closeMenu}>
->>>>>>> root-Login_patch_3
                   Scan
                 </NavLink>
               </li>
               <li>
-<<<<<<< HEAD
-                <NavLink to="/reports" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-=======
                 <NavLink to="/reports" className={navLinkClass} onClick={closeMenu}>
->>>>>>> root-Login_patch_3
                   Reports
                 </NavLink>
               </li>
             </ul>
 
-            {/* User Area */}
-            <div className="navbar-user-area">
+            {/* User + Logout - Desktop: right side | Mobile: inside menu when opened */}
+            <div className={`navbar-user-area ${mobileOpen ? 'd-flex flex-column align-items-center w-100 mt-3' : ''}`}>
               {user && (
-                <div className="user-pill">
+                <div className="user-pill mb-2">
                   <div className="user-avatar">
                     {user.name?.[0]?.toUpperCase() || 'U'}
                   </div>
@@ -120,17 +94,12 @@ export default function Navbar({ logout, user }) {
 
               <button
                 onClick={() => {
-<<<<<<< HEAD
-                  setMobileOpen(false);
-=======
                   closeMenu();
->>>>>>> root-Login_patch_3
                   logout();
                 }}
                 className="logout-btn"
               >
-                <FaSignOutAlt />
-                Logout
+                <FaSignOutAlt /> Logout
               </button>
             </div>
           </div>
@@ -270,40 +239,26 @@ export default function Navbar({ logout, user }) {
           box-shadow: 0 8px 18px rgba(220, 53, 69, 0.25);
         }
 
-<<<<<<< HEAD
         /* Mobile Improvements */
-=======
-        /* Mobile Fix */
->>>>>>> root-Login_patch_3
         @media (max-width: 991.98px) {
           .navbar-inner {
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 14px;
             padding: 12px 0;
           }
 
           .navbar-links {
-<<<<<<< HEAD
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-=======
             flex-direction: column;
             width: 100%;
             gap: 8px;
->>>>>>> root-Login_patch_3
           }
 
           .navbar-user-area {
+            width: 100%;
             justify-content: center;
-<<<<<<< HEAD
-            width: 100%;
-          }
-
-          .user-pill {
-=======
->>>>>>> root-Login_patch_3
-            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
           }
 
           .user-pill, .logout-btn {
