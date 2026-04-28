@@ -194,7 +194,8 @@ select.input-field option {
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(16, 24, 40, 0.12);
+  box-shadow: 0 20px 40px rgba(20, 40, 16, 0.12);
+  background: #d8efbe;
 }
 
 .label-muted {
@@ -202,7 +203,7 @@ select.input-field option {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6b7280;
+  color: #5c459b;
 }
 
 .value-strong {
@@ -252,6 +253,7 @@ select.input-field option {
 }
 
 /* Scanner */
+
 .scanner-card {
   background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
 }
@@ -489,4 +491,21 @@ select.input-field option {
   #reader__scan_region {
     min-height: 220px;
   }
+}
+
+/* Report */
+.Excel-card
+{
+background: #d1d6cf;
+}
+.Excel-card-header {
+background: #93b1d0;
+}
+
+.pdf-card
+{
+background: #b1eb9c;
+}
+.pdf-card-header {
+background: #d0ac6a;
 }

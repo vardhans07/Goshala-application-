@@ -34,7 +34,7 @@ export default function Reports() {
           <p className="page-subtitle">Professional attendance reports for your Goshala</p>
         </div>
 
-        <div className="app-card p-8">
+        <div className="app-card period-selector p-8">
           {/* Period Selector */}
           <div className="mx-auto mb-12 flex w-full max-w-3xl flex-wrap justify-center gap-3 rounded-3xl border border-emerald-100 bg-emerald-50 p-4">
             {['daily', 'weekly', 'monthly', 'yearly'].map((p) => (
@@ -43,7 +43,7 @@ export default function Reports() {
                 onClick={() => setPeriod(p)}
                 className={`min-w-[110px] rounded-2xl px-6 py-3 text-sm font-semibold transition-all duration-200 md:text-base ${
                   period === p
-                    ? 'bg-green-700 text-white shadow-md'
+                    ? 'bg-green-700 text-black shadow-md'
                     : 'border border-gray-200 bg-white text-gray-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600'
                 }`}
               >
@@ -54,8 +54,8 @@ export default function Reports() {
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {/* Excel Card */}
-            <div className="group rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-600 to-green-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
+            <div className="Excel-card group rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-600 to-green-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="Excel-card-header mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
                 📊
               </div>
               <h3 className="text-3xl font-bold text-white">Excel Report</h3>
@@ -63,8 +63,8 @@ export default function Reports() {
                 Download detailed {period} attendance in spreadsheet format
               </p>
               <div className="mt-8 flex items-center justify-between">
-                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-white">
-                  .xlsx • Editable
+                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-black">
+                  .xlsx 
                 </span>
                 <button
                   onClick={() => download('excel')}
@@ -76,8 +76,8 @@ export default function Reports() {
             </div>
 
             {/* PDF Card */}
-            <div className="group rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-600 to-red-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
+            <div className="pdf-card group rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-600 to-red-700 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="pdf-card-header mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/20 text-5xl text-white">
                 📄
               </div>
               <h3 className="text-3xl font-bold text-white">PDF Report</h3>
@@ -85,8 +85,8 @@ export default function Reports() {
                 Clean printable {period} report with Goshala branding
               </p>
               <div className="mt-8 flex items-center justify-between">
-                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-white">
-                  .pdf • Professional
+                <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-medium text-black">
+                  .pdf 
                 </span>
                 <button
                   onClick={() => download('pdf')}
